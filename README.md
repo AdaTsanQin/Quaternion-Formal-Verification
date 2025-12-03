@@ -6,7 +6,7 @@
 > **Abstract**
 >
 >
-> This project bridges the gap between abstract algebra and safety-critical engineering by formally verifying quaternion-based rotations using the **Coq Proof Assistant**. Beyond proving the classical isomorphism between unit quaternions ($S^3$) and the rotation group ($SO(3)$), this work addresses a critical real-world issue: **Numerical Drift**.
+> This project bridges the gap between abstract algebra and safety-critical engineering by formally verifying quaternion-based rotations using the **Coq Proof Assistant**. Beyond proving the classical isomorphism between unit quaternions ($S^3$) and the rotation group $\text{SO}(3)$, this work addresses a critical real-world issue: **Numerical Drift**.
 >
 > We rigorously formalize the error propagation model of non-unit quaternions and verify a normalization algorithm that guarantees geometric rigidity. The development process, spanning 19 iterations (V1–V19), demonstrates a sophisticated stratification of automated tactics (`field`, `lra`, `ring`) to overcome significant unification challenges in formal logic.
 >
@@ -58,7 +58,7 @@ This section formalizes the engineering constraints added in Part 6 of the codeb
 We mathematically derive the scaling factor introduced by norm error. Using the multiplicative property $|ab| = |a||b|$:
 
 $$
-|v'| = |q v q^{*}| = |q| \cdot |v| \cdot |q^{*}| = |q|^2 |v|
+|v'| = |q v q^{\ast}| = |q| \cdot |v| \cdot |q^{\ast}| = |q|^2 |v|
 $$
 
 If $|q| \neq 1$, the vector length $|v|$ is scaled by $|q|^2$. This is formally proven in `drift_causes_scaling`.
