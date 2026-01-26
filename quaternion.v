@@ -1,9 +1,4 @@
-(** 终极重构版 V19：单位四元数覆盖 SO(3) 证明 + 漂移与归一化验证 *)
-(** 修复内容：
-    1. 针对 Rinv_mult 参数错误 (Illegal application)，弃用该定理。
-    2. 改用 Coq 的 'field' 策略自动解决倒数乘法问题，彻底绕过参数陷阱。
-    3. 辅助引理 inv_sqrt_sq_eq_inv 重写为 field 版本，坚如磐石。
-*)
+
 
 Require Import Reals.
 Require Import Lra.
@@ -11,7 +6,7 @@ Require Import Psatz. (* 必须导入，用于 nra 策略 *)
 Open Scope R_scope.
 
 (* ========================================================= *)
-(* Part 1: 基础定义 (Basic Definitions)                      *)
+(* Part 1: Basic Definitions                                 *)
 (* ========================================================= *)
 
 Record Quat : Type := mkQuat {
@@ -47,7 +42,7 @@ Definition is_unit_quat (q : Quat) : Prop := q_norm2 q = 1.
 Definition is_pure (q : Quat) : Prop := qw q = 0.
 
 (* ========================================================= *)
-(* Part 2: 算术引理 (Arithmetic Lemmas)                      *)
+(* Part 2: Arithmetic Lemmas                                 *)
 (* ========================================================= *)
 
 Lemma q_mul_assoc : forall q1 q2 q3, q_mul q1 (q_mul q2 q3) = q_mul (q_mul q1 q2) q3.
@@ -90,14 +85,14 @@ Proof.
 Qed.
 
 (* ========================================================= *)
-(* Part 3: 旋转定义 (Rotation Definition)                    *)
+(* Part 3: Rotation Definition                               *)
 (* ========================================================= *)
 
 Definition rotate (q v : Quat) : Quat :=
   q_mul (q_mul q v) (q_conj q).
 
 (* ========================================================= *)
-(* Part 4: 双覆盖证明 (Double Cover Proof)                   *)
+(* Part 4: Double Cover Proof                                *)
 (* ========================================================= *)
 
 Theorem double_cover_equality : forall (q v : Quat),
@@ -124,7 +119,7 @@ Proof.
 Qed.
 
 (* ========================================================= *)
-(* Part 5: 核性质证明 (Kernel Proof)                         *)
+(* Part 5: Kernel Proof                                      *)
 (* ========================================================= *)
 
 Definition Q_ONE := mkQuat 1 0 0 0.
@@ -217,8 +212,7 @@ Proof.
 Qed.
 
 (* ========================================================= *)
-(* Part 6: 漂移与归一化验证 (Drift and Normalization)      *)
-(* 修复注释中的语法陷阱，并使用 Helper Lemma 策略 *)
+(* Part 6: Drift and Normalization                           *)
 (* ========================================================= *)
 
 (* --- 6.1 辅助引理：模长与缩放性质 --- *)
@@ -272,10 +266,7 @@ Qed.
 Definition normalize (q : Quat) : Quat :=
   q_scale (/ sqrt (q_norm2 q)) q.
 
-(* 【关键辅助引理 V19】 
-   证明：对于正实数 x，(1/sqrt(x)) * (1/sqrt(x)) = 1/x
-   【修复方案】：使用 field 策略，不依赖手动 theorem application。
-*)
+
 Lemma inv_sqrt_sq_eq_inv : forall x : R, 
   0 < x -> 
   (/ sqrt x) * (/ sqrt x) = / x.
@@ -330,7 +321,6 @@ Proof.
     exact Hk_pos.
 Qed.
 
-(* --- 6.4 终极验证 --- *)
 
 (* 【验证：归一化修复了旋转漂移】 *)
 Theorem normalized_rotation_preserves_norm : forall (q v : Quat),
